@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отслеживание местоположения</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        #location {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .btn {
+            padding: 10px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Геолокация</h1>
+    <p id="status">Загрузка...</p>
+    <p id="location">Ваши координаты: </p>
+    <button class="btn" id="copy-location">Копировать местоположение</button>
+
+    <script>
+        let latitude, longitude;
+
+        function showPosition(position) {
+            latitude = position.coords.latitude;
+            longitude = position.coords.longitude;
+            const locationText = `${latitude}, ${longitude}`;  // Координаты через запятую
+            document.getElementById("location").textContent = `Ваши координаты: ${locationText}`;
+            document.getElementById("status").textContent = "Местоположение найдено!";
+
+            // Вешаем событие на кнопку для копирования
+            document.getElementById("copy-location").onclick = function() {
+                copyToClipboard(locationText);
+            };
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById("status").textContent = "Пользователь отклонил запрос на геолокацию.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById("status").textContent = "Не удалось получить местоположение.";
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById("status").textContent = "Запрос на геолокацию занял слишком много времени.";
+                    break;
+                default:
+                    document.getElementById("status").textContent = "Произошла ошибка.";
+                    break;
+            }
+        }
+
+        function copyToClipboard(text) {
+            const tempInput = document.createElement("input");
+            document.body.appendChild(tempInput);
+            tempInput.value = text;
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            alert(`Скопировано в буфер обмена: ${text}`);
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            document.getElementById("status").textContent = "Геолокация не поддерживается этим браузером.";
+        }
+    </script>
+</body>
+</html>
