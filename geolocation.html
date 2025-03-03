@@ -34,8 +34,8 @@
         let latitude, longitude;
 
         function showPosition(position) {
-            latitude = position.coords.latitude.toFixed(12);  // Округляем до 12 знаков после запятой
-            longitude = position.coords.longitude.toFixed(12);  // Округляем до 12 знаков после запятой
+            latitude = position.coords.latitude.toFixed(6);  // Округляем до 12 знаков после запятой
+            longitude = position.coords.longitude.toFixed(6);  // Округляем до 12 знаков после запятой
             const locationText = `${latitude}, ${longitude}`;  // Координаты через запятую
             document.getElementById("location").textContent = `Ваши координаты: ${locationText}`;
             document.getElementById("status").textContent = "Местоположение найдено!";
